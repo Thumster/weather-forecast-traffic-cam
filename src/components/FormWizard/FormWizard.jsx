@@ -7,12 +7,13 @@ import {
 } from "./FormWizardStyles";
 import Section1 from "../FormSections/Section1";
 import Section2 from "../FormSections/Section2";
+import Section3 from "../FormSections/Section3";
 import AppContext from "../../contexts/AppContext";
 
 const components = [
     { sectionId: 1, content: Section1 },
     { sectionId: 2, content: Section2 },
-    { content: "efgh" },
+    { content: Section3 },
 ];
 
 const FormWizard = () => {

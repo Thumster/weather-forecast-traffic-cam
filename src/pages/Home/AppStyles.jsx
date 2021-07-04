@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import Button from "../../components/Button/Button";
 
 export const AppHeader = styled.header`
     text-align: center;
@@ -15,7 +16,7 @@ export const AppFormContainer = styled.div`
     padding: 3rem;
     background-color: #ffff;
     height: auto;
-    min-width: 75vw;
+    width: 75vw;
     display: flex;
     border-radius: 10px;
     @media (max-width: 768px) {
@@ -27,7 +28,7 @@ export const AppFormContainer = styled.div`
 
 export const HeaderLabel = styled.div`
     margin: 1rem 0;
-    min-width: 75vw;
+    width: 75vw;
     font-size: calc(10px + 3vmin);
     display: flex;
     align-items: center;
@@ -36,5 +37,13 @@ export const HeaderLabel = styled.div`
         min-width: 100vw;
         margin: 1rem;
         padding: 0 1rem;
+    }
+`;
+
+export const StyledResetButton = styled(Button)`
+    float: right;
+    margin-left: auto;
+    @media (max-width: 470px) {
+        margin-left: 1rem;
     }
 `;

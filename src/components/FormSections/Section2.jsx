@@ -1,19 +1,29 @@
-import { useContext, useEffect } from "react";
-import { Form, Row, Col } from "react-bootstrap";
+import { useContext, useEffect, useState } from "react";
+import { Form, Row, Col, Alert } from "react-bootstrap";
 import { HeaderText, StyledForm } from "./SectionStyles";
-import Button from "../Button/Button";
-import { appLabels, section2Labels } from "../../config/App";
+import Loader from "../Loader/Loader";
+import { section2Labels } from "../../config/App";
+import { section2Errors } from "../../config/ErrorMessage";
 import AppContext, { ACTIONS } from "../../contexts/AppContext";
 import { fetchTraffic, fetchWeather, fetchLocation } from "../../contexts/API";
+import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 
 const Section2 = () => {
     const context = useContext(AppContext);
+    const { promiseInProgress } = usePromiseTracker();
+
     const { dispatch } = context;
     const { date_time, all_locations } = context.state;
+    const [loading, setLoading] = useState(true);
+    // const [locationsSet, setLocationsSet] = useState(new Set());
+
+    let locationsSet = new Set();
+    const [uniqueLocations, setUniqueLocations] = useState([]);
 
     useEffect(() => {
         fetchTraffic(date_time).then((resp) => {
-            const all_locations = resp?.data?.items[0]?.cameras;
+            const all_locations = resp?.data?.items[0]?.cameras || [];
+            locationsSet = new Set();
             const promises = all_locations.map((item) => {
                 const { latitude, longitude } = item.location;
                 return fetchLocation(latitude, longitude).then(
@@ -21,6 +31,7 @@ const Section2 = () => {
                         const roadName =
                             locationResp?.data?.GeocodeInfo[0]?.ROAD;
                         if (roadName) {
+                            locationsSet.add(roadName);
                             const new_item = {
                                 ...item,
                                 location: {
@@ -35,73 +46,100 @@ const Section2 = () => {
                     }
                 );
             });
-            Promise.allSettled(promises).then((results) => {
-                const filteredResults = results
-                    .filter((result) => result.status !== "rejected")
-                    .map((result) => {
-                        return result.value;
+            setLoading(false);
+            trackPromise(
+                Promise.allSettled(promises).then((results) => {
+                    const filteredResults = results
+                        .filter((result) => result.status !== "rejected")
+                        .map((result) => {
+                            return result.value;
+                        });
+                    dispatch({
+                        type: ACTIONS.SET_ALL_LOCATIONS,
+                        payload: {
+                            all_locations: filteredResults,
+                        },
                     });
-                dispatch({
-                    type: ACTIONS.SET_ALL_LOCATIONS,
-                    payload: {
-                        all_locations: filteredResults,
-                    },
-                });
-            });
+
+                    setUniqueLocations(
+                        [...locationsSet].sort((a, b) => {
+                            return a < b ? -1 : 1;
+                        })
+                    );
+                })
+            );
         });
 
         fetchWeather(date_time).then((resp) => {
-            console.log("WEATHER", resp);
             dispatch({
-                type: ACTIONS.SET_AREA_METADATA,
+                type: ACTIONS.SET_WEATHER_DATA,
                 payload: {
-                    area_metadata: resp?.data?.area_metadata,
+                    weather_data: resp?.data,
                 },
             });
         });
     }, [date_time]);
 
-    const handleSubmit = (event) => {
+    useEffect(() => {
+        if (uniqueLocations.length === 0) {
+            return;
+        }
+        dispatch({
+            type: ACTIONS.SET_LOCATION,
+            payload: { location: uniqueLocations[0] },
+        });
+    }, [uniqueLocations]);
+
+    const handleChange = (event) => {
         event.preventDefault();
 
-        const form = event.currentTarget;
-        const input_location = event.target.elements.input_location.value;
-        if (form.checkValidity() === false) {
-            event.stopPropagation();
-        } else {
-            dispatch({
-                type: ACTIONS.SET_LOCATION,
-                payload: { location: input_location },
-            });
-        }
+        const selectedLocation = event.target.value;
+        dispatch({
+            type: ACTIONS.SET_LOCATION,
+            payload: { location: selectedLocation },
+        });
     };
 
+    if (promiseInProgress || loading) {
+        return <Loader></Loader>;
+    }
+
     return (
-        <StyledForm noValidate onSubmit={handleSubmit} id="section2Form">
-            <HeaderText>{section2Labels.header}</HeaderText>
-            <Row>
-                <Form.Group as={Col} md={10} xs={12}>
-                    <Form.Control as="select" name="input_location">
-                        {all_locations &&
-                            all_locations.map((location, idx) => {
-                                return (
-                                    <option
-                                        key={location.camera_id}
-                                        value={idx}
-                                    >
-                                        {location.location.road_name}
-                                    </option>
-                                );
-                            })}
-                    </Form.Control>
-                </Form.Group>
-                <Col s={12} md={2}>
-                    <Button type="submit" style={{ float: "right" }}>
-                        {appLabels.btn_search}
-                    </Button>
-                </Col>
-            </Row>
-        </StyledForm>
+        <>
+            {all_locations && all_locations.length !== 0 ? (
+                <StyledForm noValidate id="section2Form">
+                    <HeaderText>{section2Labels.header}</HeaderText>
+                    <Row>
+                        <Form.Group as={Col} md={6} xs={12}>
+                            <Form.Control
+                                as="select"
+                                name="input_location"
+                                onChange={handleChange}
+                            >
+                                {uniqueLocations &&
+                                    uniqueLocations.map((location) => {
+                                        return (
+                                            <option
+                                                key={location}
+                                                value={location}
+                                            >
+                                                {location}
+                                            </option>
+                                        );
+                                    })}
+                            </Form.Control>
+                        </Form.Group>
+                    </Row>
+                </StyledForm>
+            ) : (
+                <Alert
+                    variant="danger"
+                    style={{ textAlign: "left", width: "100%" }}
+                >
+                    {section2Errors.no_data}
+                </Alert>
+            )}
+        </>
     );
 };
 

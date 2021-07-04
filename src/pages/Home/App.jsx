@@ -1,22 +1,36 @@
-import { AppHeader, AppFormContainer, HeaderLabel } from "./AppStyles";
+import { useContext } from "react";
+import {
+    AppHeader,
+    AppFormContainer,
+    HeaderLabel,
+    StyledResetButton,
+} from "./AppStyles";
 import logo from "../../assets/svgs/cloudy-day-3.svg";
 import FormWizard from "../../components/FormWizard/FormWizard";
-import Button from "../../components/Button/Button";
 import { appLabels } from "../../config/App";
+import AppContext, { ACTIONS } from "../../contexts/AppContext";
 
 function App() {
+    const context = useContext(AppContext);
+    const { dispatch } = context;
+    const handleReset = () => {
+        dispatch({
+            type: ACTIONS.RESET,
+        });
+    };
     return (
         <div className="app">
             <AppHeader>
                 <HeaderLabel>
                     <img src={logo} alt="logo" />
                     {appLabels.application_name}
-                    <Button
+                    <StyledResetButton
+                        type="submit"
                         variant="secondary"
-                        style={{ float: "right", marginLeft: "auto" }}
+                        onClick={handleReset}
                     >
                         {appLabels.btn_reset}
-                    </Button>
+                    </StyledResetButton>
                 </HeaderLabel>
                 <AppFormContainer>
                     <FormWizard />

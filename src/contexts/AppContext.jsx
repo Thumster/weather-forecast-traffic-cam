@@ -6,23 +6,25 @@ const initialState = {
     date_time: null,
     all_locations: [],
     location: null,
-    area_metadata: [],
+    weather_data: null,
 };
 
 const AppContext = createContext(initialState);
 
 export const ACTIONS = {
+    RESET: "RESET",
     SET_DATE_TIME: "SET_DATE_TIME",
     SET_ALL_LOCATIONS: "SET_ALL_LOCATIONS",
     SET_LOCATION: "SET_LOCATION",
-    SET_AREA_METADATA: "SET_AREA_METADATA",
+    SET_WEATHER_DATA: "SET_WEATHER_DATA",
 };
 
 const appReducer = (state, action) => {
-    console.log(action.type);
-    console.log("ORIGINAL STATE", state);
     let updatedState;
     switch (action.type) {
+        case ACTIONS.RESET:
+            updatedState = { ...initialState };
+            break;
         case ACTIONS.SET_DATE_TIME:
             updatedState = {
                 ...state,
@@ -43,17 +45,18 @@ const appReducer = (state, action) => {
                 currentStep: 3,
             };
             break;
-        case ACTIONS.SET_AREA_METADATA:
+        case ACTIONS.SET_WEATHER_DATA:
             updatedState = {
                 ...state,
-                area_metadata: action.payload.area_metadata,
+                weather_data: action.payload.weather_data,
             };
             break;
         default:
             updatedState = state;
             break;
     }
-    console.log("UPDATED STATE", updatedState);
+
+    console.log(action.type, state, updatedState);
     return updatedState;
 };
 
