@@ -4,6 +4,7 @@ import AppContext from "../../contexts/AppContext";
 import {
     StyledContainer,
     HeaderText,
+    TrafficImageContainer,
     TrafficImage,
     StyledCol,
     SubHeaderText,
@@ -41,20 +42,22 @@ const Section3 = () => {
                         return (
                             <StyledCol lg={5} s={11} key={item.camera_id}>
                                 <Row style={{ textAlign: "left" }}>
-                                    <Col s={12} md={4}>
+                                    <Col s={12} md="auto">
                                         <SubHeaderText>
                                             <b>Latitude</b>{" "}
                                             {item.location.latitude.toFixed(2)}
                                         </SubHeaderText>
                                     </Col>
-                                    <Col s={12} md={4}>
+                                    <Col s={12} md="auto">
                                         <SubHeaderText>
                                             <b>Longitude</b>{" "}
                                             {item.location.longitude.toFixed(2)}
                                         </SubHeaderText>
                                     </Col>
                                 </Row>
-                                <TrafficImage src={item.image} />
+                                <TrafficImageContainer>
+                                    <TrafficImage src={item.image} />
+                                </TrafficImageContainer>
                             </StyledCol>
                         );
                     })}

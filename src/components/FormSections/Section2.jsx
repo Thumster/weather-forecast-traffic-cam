@@ -7,15 +7,15 @@ import { section2Errors } from "../../config/ErrorMessage";
 import AppContext, { ACTIONS } from "../../contexts/AppContext";
 import { fetchTraffic, fetchWeather, fetchLocation } from "../../contexts/API";
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
+import SectionWeather from "./SectionWeather";
 
 const Section2 = () => {
     const context = useContext(AppContext);
     const { promiseInProgress } = usePromiseTracker();
 
     const { dispatch } = context;
-    const { date_time, all_locations } = context.state;
+    const { date_time, all_locations, weather_data } = context.state;
     const [loading, setLoading] = useState(true);
-    // const [locationsSet, setLocationsSet] = useState(new Set());
 
     let locationsSet = new Set();
     const [uniqueLocations, setUniqueLocations] = useState([]);
@@ -108,9 +108,9 @@ const Section2 = () => {
         <>
             {all_locations && all_locations.length !== 0 ? (
                 <StyledForm noValidate id="section2Form">
-                    <HeaderText>{section2Labels.header}</HeaderText>
                     <Row>
-                        <Form.Group as={Col} md={6} xs={12}>
+                        <Form.Group as={Col} xl={6} lg={12}>
+                            <HeaderText>{section2Labels.header}</HeaderText>
                             <Form.Control
                                 as="select"
                                 name="input_location"
@@ -128,6 +128,11 @@ const Section2 = () => {
                                         );
                                     })}
                             </Form.Control>
+                        </Form.Group>
+                        <Form.Group as={Col} xl={6} lg={12}>
+                            {weather_data?.items[0]?.forecasts && (
+                                <SectionWeather></SectionWeather>
+                            )}
                         </Form.Group>
                     </Row>
                 </StyledForm>

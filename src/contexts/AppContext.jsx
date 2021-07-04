@@ -27,7 +27,7 @@ const appReducer = (state, action) => {
             break;
         case ACTIONS.SET_DATE_TIME:
             updatedState = {
-                ...state,
+                ...initialState,
                 date_time: action.payload.date_time,
                 currentStep: 2,
             };
