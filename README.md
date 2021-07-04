@@ -1,70 +1,36 @@
-# Getting Started with Create React App
-
+# Weather Forecast Traffic Cam Application
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## Getting Started
+1. Clone the repository
+2. npm install
+3. npm start
 
-In the project directory, you can run:
+## Libraries
+* Linting
+  * Prettier
+  * ESLint
+* UI
+  * React-Bootstrap
+* HTTP Requests
+  * Axios
 
-### `yarn start`
+## APIs Used
+* [Data.gov.sg - Traffic Images](https://data.gov.sg/dataset/traffic-images)
+* [Data.gov.sg - Weather Forecast](https://data.gov.sg/dataset/weather-forecast)
+* [Onemap.gov.sg - Reverse Geocoding](https://www.onemap.gov.sg/docs/#reverse-geocode-wgs84)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Summary
+This application utilizes the open source data from the aforementioned APIs. It aims to provide an avenue for users to view the traffic condition as well as weather for the selected date time. The application is responsive and works on desktop and mobile. With the help of a step wizard, the application provides a simple and intuitive experience for the users. 
+### 1. Select Date Time (with validation and date/time picker)
+![alt text](https://imgur.com/xlIz8Q9.png)
+### 2. Select Location
+![alt text](https://imgur.com/0XfDzWq.png)
+### 3. View Traffic Images and Weather Condition
+![alt text](https://imgur.com/JkEJqQJ.png)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Note
+* You will have to provide a valid API_KEY from [Onemap](https://discuss.onemap.sg/t/steps-for-api-authentication/59) for the reverse geocoding.
+* Traffic images from the same road will be grouped together and all will be displayed with their respective longitude, latitude for your reference.
+* Weather forecast is taken by identifying the nearest location provided from the Weather Forecast API and the selected location (Step 2).
+* If an invalid date time is provided (falls beyond the range of the Traffic Images API), an error message will be displayed.
